@@ -19,6 +19,15 @@ config SPL_DM_ETH
 	depends on SPL_NET
 	def_bool y
 
+config W5500
+        bool "W5500 device driver"
+	depends on SPI
+        help
+          Enable w5500 driver
+
+	  Adds support for Wiznet W5500 device. The device must be attached
+	  to a SPI bus.
+
 config DM_MDIO
 	bool "Enable Driver Model for MDIO devices"
 	depends on PHYLIB
@@ -122,14 +131,6 @@ config AG7XXX
 	  This driver supports the Atheros AG7xxx Ethernet MAC. This MAC is
 	  present in the Atheros AR7xxx, AR9xxx and QCA9xxx MIPS chips.
 
-config AIROHA_ETH
-	bool "Airoha Ethernet QDMA Driver"
-	depends on ARCH_AIROHA
-	select PHYLIB
-	select DM_RESET
-	help
-	  This Driver support Airoha Ethernet QDMA Driver
-	  Say Y to enable support for the Airoha Ethernet QDMA.
 
 config ALTERA_TSE
 	bool "Altera Triple-Speed Ethernet MAC support"
@@ -244,13 +245,6 @@ config DWC_ETH_QOS
 	  This driver supports the Synopsys Designware Ethernet QOS (Quality
 	  Of Service) IP block. The IP supports many options for bus type,
 	  clocking/reset structure, and feature list.
-
-config DWC_ETH_QOS_ADI
-	bool "Synopsys DWC Ethernet QOS device support for ADI SC59x-64 parts"
-	depends on DWC_ETH_QOS
-	help
-		The Synopsis Designware Ethernet QoS IP block with the specific
-		configuration used in the ADI ADSP-SC59X 64 bit SoCs
 
 config DWC_ETH_QOS_IMX
 	bool "Synopsys DWC Ethernet QOS device support for IMX"
@@ -867,7 +861,6 @@ config RENESAS_ETHER_SWITCH
 config RENESAS_RAVB
 	bool "Renesas Ethernet AVB MAC"
 	depends on RCAR_64
-	select BITBANGMII
 	select PHYLIB
 	select PHY_ETHERNET_ID
 	help
@@ -982,7 +975,14 @@ config TSEC_ENET
 	  This driver implements support for the (Enhanced) Three-Speed
 	  Ethernet Controller found on Freescale SoCs.
 
-source "drivers/net/mtk_eth/Kconfig"
+config MEDIATEK_ETH
+	bool "MediaTek Ethernet GMAC Driver"
+	select PHYLIB
+	select DM_GPIO
+	select DM_RESET
+	help
+	  This Driver support MediaTek Ethernet GMAC
+	  Say Y to enable support for the MediaTek Ethernet GMAC.
 
 config HIFEMAC_ETH
 	bool "HiSilicon Fast Ethernet Controller"
@@ -1015,26 +1015,6 @@ config FSL_ENETC
 	help
 	  This driver supports the NXP ENETC Ethernet controller found on some
 	  of the NXP SoCs.
-
-config FSL_ENETC_NETC_BLK_CTRL
-	bool "NXP ENETC NETC blocks control driver"
-	depends on FSL_ENETC && IMX95
-	default y if IMX95
-	help
-	  This driver configures Integrated Endpoint Register Block (IERB) and
-	  Privileged Register Block (PRB) of NETC. For i.MX platforms, it also
-	  includes the configuration of NETCMIX block.
-	  The IERB contains registers that are used for pre-boot initialization,
-	  debug, and non-customer configuration. The PRB controls global reset
-	  and global error handling for NETC. The NETCMIX block is mainly used
-	  to set MII protocol and PCS protocol of the links, it also contains
-	  settings for some other functions.
-
-config MDIO_GPIO_BITBANG
-	bool "GPIO bitbanging MDIO driver"
-	depends on DM_MDIO && DM_GPIO
-	help
-	 Driver for bitbanging MDIO
 
 config MDIO_MUX_I2CREG
 	bool "MDIO MUX accessed as a register over I2C"
